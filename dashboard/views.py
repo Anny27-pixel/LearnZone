@@ -3,6 +3,8 @@ from . forms import *
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
+from datetime import datetime
+from django.utils import timezone
 
 # Create your views here.
 def home(request):
@@ -33,38 +35,56 @@ def homework(request):
         form = HomeworkForm(request.POST)
         if form.is_valid():
             try:
-                finished = request.POST['is_finished']
-                if finished == 'on':
-                    finished = True
-                else:
-                    finished = False
+                finished = request.POST.get('is_finished', 'off')
+                finished = True if finished == 'on' else False
             except:
                 finished = False
+            
+            # Check if the 'due' field contains time, if not add default time
+            due = request.POST['due']
+            if len(due) == 10:  # Date only (YYYY-MM-DD)
+                due += " 00:00:00"  # Add default time
+
+            # Convert to timezone-aware datetime
+            due = timezone.make_aware(datetime.strptime(due, "%Y-%m-%d %H:%M:%S"))
+
+            # Create the Homework object
             homeworks = Homework(
-                user = request.user,
-                subject = request.POST['subject'],
-                title = request.POST['title'],
-                description = request.POST['description'],
-                due = request.POST['due'],
-                is_finished = finished
+                user=request.user,
+                subject=request.POST['subject'],
+                title=request.POST['title'],
+                description=request.POST['description'],
+                due=due,
+                is_finished=finished
             )
             homeworks.save()
-            form = HomeworkForm()
+            
+            form = HomeworkForm()  # Reset the form
             messages.success(request, f'Homework added from {request.user.username}')
     else:
         form = HomeworkForm()
+
+    # Fetch all homework for the user
     homeworks = Homework.objects.filter(user=request.user)
-    if len(homeworks) == 0:
-        homework_done = True  # No homework available
-    else:
-        homework_done = False  # Homework exists
+    homework_done = True if not homeworks else False  # No homework available if empty
 
     context = {
         'homeworks': homeworks,
         'homework_done': homework_done,
-        'form':form,
+        'form': form,
     }
     return render(request, 'dashboard/homework.html', context)
+def update_homework(request, pk=None):
+    homework = Homework.objects.get(id=pk)
+    
+    # Toggle the is_finished field
+    homework.is_finished = not homework.is_finished
+    homework.save()
+    
+    return redirect('homework')
+
+
+
     
 
 
