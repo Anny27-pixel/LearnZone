@@ -29,6 +29,7 @@ class NotesDetailView(generic.DetailView):
     model = Notes
 
 def homework(request):
+    form = HomeworkForm()
     homeworks = Homework.objects.filter(user=request.user)
     if len(homeworks) == 0:
         homework_done = True  # No homework available
@@ -38,6 +39,7 @@ def homework(request):
     context = {
         'homeworks': homeworks,
         'homework_done': homework_done,
+        'form':form,
     }
     return render(request, 'dashboard/homework.html', context)
     
