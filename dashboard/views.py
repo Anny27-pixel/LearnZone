@@ -74,6 +74,7 @@ def homework(request):
         'form': form,
     }
     return render(request, 'dashboard/homework.html', context)
+
 def update_homework(request, pk=None):
     homework = Homework.objects.get(id=pk)
     
@@ -83,6 +84,9 @@ def update_homework(request, pk=None):
     
     return redirect('homework')
 
+def delete_homework(request, pk=None):
+    Homework.objects.get(id=pk).delete()
+    return redirect('homework')
 
 
     
