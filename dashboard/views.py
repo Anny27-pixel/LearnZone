@@ -81,7 +81,7 @@ def homework(request):
     return render(request, 'dashboard/homework.html', context)
 
 def update_homework(request, pk=None):
-    homework = Homework.objects.get(id=pk)
+    homework = Homework.objects.get(pk=pk)
     
     # Toggle the is_finished field
     homework.is_finished = not homework.is_finished
@@ -164,3 +164,16 @@ def todo(request):
         'todos_done':todos_done
     }
     return render(request, 'dashboard/todo.html',context)
+
+def update_todo(request, pk=None):
+    todo = Todo.objects.get(pk=pk)
+    if todo.is_finished == True:
+        todo.is_finished = False
+    else:
+        todo.is_finished = True
+    todo.save()
+    return redirect('todo')
+
+def delete_todo(request, pk=None):
+    Todo.objects.get(id=pk).delete()
+    return redirect('todo')
