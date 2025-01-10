@@ -5,7 +5,11 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
 from datetime import datetime
 from django.utils import timezone
-from youtubesearchpython import videosSearch
+
+
+
+
+
 
 # Create your views here.
 def home(request):
@@ -89,42 +93,39 @@ def delete_homework(request, pk=None):
     Homework.objects.get(id=pk).delete()
     return redirect('homework')
 
+from django.shortcuts import render, redirect
+from .forms import DashboardFom
+from youtubesearchpython import VideosSearch
+
 def youtube(request):
     if request.method == 'POST':
-        form = DashboardForm(request.POST)
+        form = DashboardFom(request.POST)
         text = request.POST['text']
-        video =videosSearch(text,limit=10)
-        result_list = []
+        video = VideosSearch(text, limit=10)
+        result_list =[]
         for i in video.result()['result']:
-            result_dict ={
+            result_dict = {
                 'input':text,
                 'title':i['title'],
                 'duration':i['duration'],
                 'thumbnail':i['thumbnails'][0]['url'],
                 'channel':i['channel']['name'],
                 'link':i['link'],
-                'view':i['viewcount']['short'],
+                'views':i['viewCount']['short'],
                 'published':i['publishedTime']
             }
-            desc = ' '
+            desc = ''
             if i['descriptionSnippet']:
                 for j in i['descriptionSnippet']:
                     desc += j['text']
             result_dict['description'] = desc
             result_list.append(result_dict)
-            context ={
+            context = {
                 'form':form,
                 'results':result_list
             }
         return render(request, 'dashboard/youtube.html',context)
     else:
-        form = DashboardForm()
-    context={
-        'form':form
-    }
-    return render(request,'dashboard/youtube.html',context)
-
-
-    
-
-
+        form = DashboardFom()
+    context ={'form':form}
+    return render(request, 'dashboard/youtube.html',context)

@@ -18,5 +18,5 @@ class HomeworkForm(forms.ModelForm):
             'due': widgets.DateInput(attrs={'type': 'date'}),
         }
 
-class DashboardForm(forms.Form):
+class DashboardFom(forms.Form):
     text = forms.CharField(max_length=100,label='enter your search ')
