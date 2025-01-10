@@ -20,3 +20,9 @@ class HomeworkForm(forms.ModelForm):
 
 class DashboardFom(forms.Form):
     text = forms.CharField(max_length=100,label='enter your search ')
+
+class TodoForm(forms.ModelForm):
+    class Meta:
+        model = Todo
+        fields = ['title', 'is_finished']
+        exclude = ['field_to_exclude']
