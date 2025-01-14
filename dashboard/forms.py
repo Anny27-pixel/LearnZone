@@ -26,3 +26,7 @@ class TodoForm(forms.ModelForm):
         model = Todo
         fields = ['title', 'is_finished']
         exclude = ['field_to_exclude']
+
+class ConversionForm(forms.Form):
+    CHOICES = [('length','Length'),('mass','Mass')]
+    measurement = forms.ChoiceField(choices= CHOICES, widget=forms.RadioSelect)
