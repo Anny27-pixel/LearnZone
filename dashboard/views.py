@@ -324,3 +324,11 @@ def conversion(request):
             'input':False
         }
     return render(request, "dashboard/conversion.html",context)
+
+
+def register(request):
+    form = UserRegistrationForm()
+    context = {
+        'form': form
+    }
+    return render(request, "dashboard/register.html", context)
