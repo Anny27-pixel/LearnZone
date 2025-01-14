@@ -332,11 +332,14 @@ def register(request):
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Account Created for this {{username}}')
-            #redirect("login")
+            messages.success(request, f'Account Created for this {username}')
+            return redirect("login")
     else:
         form = UserRegistrationForm()
     context = {
         'form': form
     }
     return render(request, "dashboard/register.html", context)
+
+def profile(request):
+    return render(request, "dashboard/profile.html")

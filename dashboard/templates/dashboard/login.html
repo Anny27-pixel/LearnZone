@@ -4,6 +4,7 @@
 {% block content %}
 <div class="container">
   <form method="POST">
+    {% csrf_token %}
     <fieldset class="form-group" style="width: 400px; margin-left: 350px;">
       <legend class="border-bottom mb-4">Log In</legend>
       {{form|crispy}}
@@ -16,7 +17,7 @@
   </form>
   <div class="border-top pt-3" style="width: 400px; margin-left: 350px;margin-bottom: 20px;">
     <small class="text-muted">Need an Account?
-      <a class="ml-2" href="#">Create an Account</a>
+      <a class="ml-2" href="{% url 'register' %}" style="color: rgb(96, 173, 218); font-weight: bold;">Create an Account</a>
     </small>
   </div>
 </div>
